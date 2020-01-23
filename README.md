@@ -1,4 +1,4 @@
-#Sistama anti fraude.
+##Sistama anti fraude.
 
 Na revenda de combustíveis, mais especificamente no programa de fidelidade do Posto de Combustíveis, é necessário um processo de auditoria para verificar se a pontuação de determinado cliente é de fato genuína. Vendas que são suspeitas de fraude vão para uma tabela onde um usuário credenciado pode aprovar ou desaprovar a venda
 
@@ -10,7 +10,7 @@ Construir um servidor que receba informações de uma venda e, se baseando em de
 - Utilizar Kafka
 - MongoDB
 
-#Regras de negócio:
+##Regras de negócio:
 
 1. O mesmo frentista pode vender no máximo 20 abastecimentos no mês;
 
@@ -20,7 +20,7 @@ Construir um servidor que receba informações de uma venda e, se baseando em de
 
 4. Um frentista pode vender no máximo 3 vezes para o mesmo cliente.
 
-#Perguntas:
+##Perguntas:
 
 1. Por que você fez essa escolha? (Banco Sql ou NoSql)
 
