@@ -8,9 +8,7 @@ const employeeSchema = new mongoose.Schema(
     salesAmount: Number
   },
   {
-    timestamps: {
-      admissionAt: "created_at"
-    }
+    timestamps: true
   }
 );
 export default mongoose.model("Employee", employeeSchema);

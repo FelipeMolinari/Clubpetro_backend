@@ -1,10 +1,11 @@
 import Client from "../Models/Client";
 import clientValidation from "../validations/clientValidations";
 import { cpf as cpfFormat } from "cpf-cnpj-validator";
-import { set } from "mongoose";
+
 const clientController = {
   async index(req, res) {
     const clients = await Client.find();
+
     return res.json(clients);
   },
   async store(req, res) {

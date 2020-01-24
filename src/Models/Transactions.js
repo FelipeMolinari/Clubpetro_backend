@@ -1,20 +1,15 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 import status from "../Utils/enumStatusTransactions";
 
 const transactionsSchema = new mongoose.Schema(
   {
     value: Number,
-    client: {
-      type: mongoose.Types.ObjectId,
-      ref: "Client"
-    },
-    employee: {
-      type: mongoose.Types.ObjectId,
-      ref: "Emproyee"
-    },
-    status: status.noFraudulent
+    clientCpf: String,
+    employeeCpf: String,
+    status: { type: String, default: status.noFraudulent },
+    msg: []
   },
-  { timestamps: { madeAt: "created_at" } }
+  { timestamps: true }
 );
 
 export default mongoose.model("Transactions", transactionsSchema);
