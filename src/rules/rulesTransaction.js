@@ -1,72 +1,78 @@
 import Transaction from "../Models/Transactions";
-import Client from "../Models/Client";
-import Employee from "../Models/Employee";
-
 const statusObj = {
   status: true,
   msg: []
 };
-async function statusTrasaction(cpfClient, cpfEmployee, value) {
-  const employeeTransactions = await Transaction.find({ cpfEmployee });
-  const clientTransactions = await Transaction.find({ cpfClient });
+async function statusTrasaction(clientCpf, employeeCpf, value) {
+  statusObj.status = true;
+  statusObj.msg = [];
+  const employeeTransactions = await Transaction.find({ employeeCpf });
+  const clientTransactions = await Transaction.find({ clientCpf });
 
   await rulesTrasaction.limitPerEmployee(3, employeeTransactions);
-  await rulesTrasaction.maxValue(20, employeeTransactions);
+
+  await rulesTrasaction.maxValue(20, employeeTransactions, value);
   await rulesTrasaction.limitPerClient(7, clientTransactions);
   await rulesTrasaction.limitTransactionsEmployeePerClient(
-    7,
+    4,
     employeeTransactions,
-    cpfClient
+    clientCpf
   );
+  if (statusObj.msg.length == 0) {
+    statusObj.msg = ["Nada suspeito encontrado!"];
+  }
 
-  console.log(statusObj);
   return statusObj;
 }
-
-//
 
 const rulesTrasaction = {
   // - O mesmo frentista pode vender no máximo 20 abastecimentos no mês;
 
   async limitPerEmployee(limit, employeeTransactions) {
     const monthNow = new Date(Date.now()).getMonth();
+
     const employeeTransactionsInMonth = employeeTransactions.filter(
-      transaction => {
-        const monthTransaction = transaction.createdAt.getMonth();
+      ({ createdAt }) => {
+        const monthTransaction = createdAt.getMonth();
         return monthTransaction == monthNow;
       }
     );
-    if (employeeTransactionsInMonth.length > limit) {
+
+    if (employeeTransactionsInMonth.length + 1 > limit) {
       statusObj.status = false;
       statusObj.msg = [
         ...statusObj.msg,
-        `Frentista fez mais de ${limit} de abastecimento no mês`
+        `O frentista fez mais de ${limit} abastecimentos por mes`
       ];
     }
   },
 
   // - Um único frentista pode vender no máximo 20% de todas as vendas;
 
-  async maxValue(percent, employeeTransactions) {
+  async maxValue(percent, employeeTransactions, value) {
     const toPercent = percent / 100;
-    const totalValueOfEmployee = employeeTransactions.reduce(
-      (trasnPrev, transAct) => {
-        trasnPrev + transAct.value;
-      },
-      0
-    );
-    const totalValue = (await Transaction.find()).reduce(
-      (trasnPrev, transAct) => {
-        trasnPrev + transAct.value;
-      },
-      0
-    );
 
-    if (totalValue * toPercent < totalValueOfEmployee) {
+    const valueEmployer = employeeTransactions
+      .map(elem => {
+        return elem.value;
+      })
+      .reduce((acumulator, num) => {
+        return (acumulator += num);
+      }, value);
+
+    const totalValue = (await Transaction.find())
+      .map(elem => {
+        return elem.value;
+      })
+      .reduce((acumulator, num) => {
+        return (acumulator += num);
+      }, value);
+
+    if (totalValue * toPercent < valueEmployer) {
       statusObj.status = false;
       statusObj.msg = [
         ...statusObj.msg,
-        `Frentista fez mais de ${percent}% de todo valor das vendas.`
+        `Frentista vendeu mais de ${percent}% de todo valor de abastecimento`
       ];
     }
   },
@@ -81,11 +87,11 @@ const rulesTrasaction = {
       return monthTransaction == monthNow;
     });
 
-    if (clientTransactionsInMonth.length > limit) {
+    if (clientTransactionsInMonth.length + 1 > limit) {
       statusObj.status = false;
       statusObj.msg = [
         ...statusObj.msg,
-        `Cliente fez mais de ${limit} abastecimentos no mês`
+        `Cliente fez mais de ${limit} de abastecimento no mês`
       ];
     }
   },
@@ -98,10 +104,9 @@ const rulesTrasaction = {
     cpfClient
   ) {
     const transacEmpToCli = employeeTransactions.filter(transaction => {
-      return (transaction.cpfClient = cpfClient);
+      return transaction.clientCpf == cpfClient;
     });
-
-    if (transacEmpToCli.length > limit) {
+    if (transacEmpToCli.length + 1 > limit) {
       statusObj.status = false;
       statusObj.msg = [
         ...statusObj.msg,

@@ -4,8 +4,7 @@ const employeeSchema = new mongoose.Schema(
   {
     name: String,
     cpf: String,
-    salary: Number,
-    salesAmount: Number
+    salary: Number
   },
   {
     timestamps: true

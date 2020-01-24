@@ -1,7 +1,7 @@
 const status = Object.freeze({
-  noFraudulent: 1,
-  fraudulent: 2,
-  inAnalysis: 3
+  noFraudulent: "Não Fraudulenta",
+  fraudulent: "Fraudulenta",
+  inAnalysis: "Suspeita"
 });
 
 export default status;

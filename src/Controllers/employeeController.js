@@ -26,8 +26,7 @@ const employeeController = {
     employee = await Employee.create({
       name,
       cpf: cpfFormated,
-      salary,
-      salesAmount: 0
+      salary
     });
 
     return res.json(employee);

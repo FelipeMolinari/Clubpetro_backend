@@ -2,12 +2,15 @@ import Transaction from "../Models/Transactions";
 import Client from "../Models/Client";
 import Employee from "../Models/Employee";
 import statusEnum from "../Utils/enumStatusTransactions";
+import formatCpf from "../Utils/cpfFormatter";
 
 import statusTrasaction from "../rules/rulesTransaction";
 
 const transactionController = {
   async store(req, res) {
-    const { clientCpf, value } = req.body;
+    let { clientCpf } = req.body;
+    clientCpf = formatCpf(clientCpf);
+    const { value } = req.body;
 
     const client = await Client.findOne({ cpf: clientCpf });
     if (!client) {
