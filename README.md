@@ -1,29 +1,33 @@
-#### 1. Sistama anti fraude.
+# 1. Sistama anti fraude.
 
 Na revenda de combustíveis, mais especificamente no programa de fidelidade do Posto de Combustíveis, é necessário um processo de auditoria para verificar se a pontuação de determinado cliente é de fato genuína. Vendas que são suspeitas de fraude vão para uma tabela onde um usuário credenciado pode aprovar ou desaprovar a venda
+
+
 
 ### 2. Objetivo
 
 Construir um servidor que receba informações de uma venda e, se baseando em determinadas regras de negócio, identifique essa venda como fraudulenta ou não.
 
-
+---
 
 ### 3. Regras de negócio:
 
-```
-- O mesmo frentista pode vender no máximo 20 abastecimentos no mês.
 
-- Um único frentista pode vender no máximo 20% de todas as vendas.
+ - O mesmo frentista pode vender no máximo 20 abastecimentos no mês.
 
-- Um único cliente pode abastecer seu carro no máximo 7 vezes por mês.
+ - Um único frentista pode vender no máximo 20% de todas as vendas.
+
+ - Um único cliente pode abastecer seu carro no máximo 7 vezes por mês.
 
 - Um frentista pode vender no máximo 3 vezes para o mesmo cliente.
-```
+
+---
 
 ### 4. Tecnologias utilizadas
 - [NojeJS](https://nodejs.org/en/).
 - [MongoDB](https://www.mongodb.com/).
 
+---
 
 ### 5. Models:
 
@@ -63,6 +67,7 @@ Construir um servidor que receba informações de uma venda e, se baseando em de
 | createdAt  | Objeto Date do momento da criação do registo. Criado pelo Mongodb.                             |   
 | updatedAt  | Objeto Date do momento da última edição do registro. Criado pelo Mongodb.                      |
 
+---
 
 ### 6. Controllers
 
@@ -108,7 +113,11 @@ Construir um servidor que receba informações de uma venda e, se baseando em de
 ***Observações importantes***: 
 - No Headers da requisição _store_ de uma nova transação deve ter um campo _authorization_ contendo o **token** gerado pelo store de uma session. Dessa forma, eu consigo garantir que o funcionário está conectado no sistema para poder fazer finalizar uma transação. Caso o token não seja informado, a API retornará _"Token not provided"_, e a função _next()_ referente à transactionController.store não será chamada. 
 
+---
+
 ### 7. Rotas
+
+Os seguintes métodos foram implementados:
 
 ```js
 
@@ -129,11 +138,23 @@ routes.get("/transactions", transactionController.index);
 export default routes;
 
 ```
+Importante notar que a função _employeeAuth_ é referênte ao middleware de autentificação de funcionário.
+
+---
+
+### Executar código:
+
+
+```yarn add ``` para. adicionar todas dependências.
+
+```yarn dev.``` para exec.
 
 ## Perguntas:
 
 1. Por que você fez essa escolha? (Banco Sql ou NoSql)
   R. Devido a pouca complexidade do problema, não se tratando de um banco de dados com muitos relacionamentos optei por uma solução NoSql.
 2. Você consegue prever algum gargalo em algum comportamento específico da sua aplicação?
-  R. Pode acontecer alguns problemas de validação, por exemplo é permitido 2 emails iguais para diferentes clientes. Entretanto, se tratando de um protótipo e não um produto de fato, acredito que isso não seria um problema.
-  
+  R. Pode acontecer alguns problemas de validação, por exemplo é permitido 2 emails iguais para diferentes clientes. Entretanto, se tratando de um protótipo e não um produto de fato, acredito que isso não seria um problema. 
+
+- É isso... Qualquer dúvida ou sujestão entre em contato. 
+:email:. felipemolinari874@gmail.com
