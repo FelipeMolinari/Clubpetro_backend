@@ -7,11 +7,19 @@ import formatCpf from "../Utils/cpfFormatter";
 import statusTrasaction from "../rules/rulesTransaction";
 
 const transactionController = {
+  async index(req, res) {
+    const transactions = await Transaction.find();
+
+    return res.json(transactions);
+  },
   async store(req, res) {
     let { clientCpf } = req.body;
     clientCpf = formatCpf(clientCpf);
-    const { value } = req.body;
 
+    const { value } = req.body;
+    if (!value) {
+      return res.status(400).json({ error: "Validation fails" });
+    }
     const client = await Client.findOne({ cpf: clientCpf });
     if (!client) {
       return res.status(400).json({ error: "Client does not found" });

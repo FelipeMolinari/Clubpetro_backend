@@ -20,5 +20,5 @@ routes.put("/employees/:cpf", employeeController.update);
 routes.post("/sessions", sessionController.store);
 
 routes.post("/transactions", employeeAuth, transactionController.store);
-
+routes.get("/transactions", transactionController.index);
 export default routes;

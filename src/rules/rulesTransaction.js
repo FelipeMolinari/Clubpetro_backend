@@ -9,12 +9,12 @@ async function statusTrasaction(clientCpf, employeeCpf, value) {
   const employeeTransactions = await Transaction.find({ employeeCpf });
   const clientTransactions = await Transaction.find({ clientCpf });
 
-  await rulesTrasaction.limitPerEmployee(3, employeeTransactions);
+  await rulesTrasaction.limitPerEmployee(20, employeeTransactions);
 
   await rulesTrasaction.maxValue(20, employeeTransactions, value);
   await rulesTrasaction.limitPerClient(7, clientTransactions);
   await rulesTrasaction.limitTransactionsEmployeePerClient(
-    4,
+    3,
     employeeTransactions,
     clientCpf
   );
@@ -51,7 +51,6 @@ const rulesTrasaction = {
 
   async maxValue(percent, employeeTransactions, value) {
     const toPercent = percent / 100;
-
     const valueEmployer = employeeTransactions
       .map(elem => {
         return elem.value;
@@ -67,7 +66,6 @@ const rulesTrasaction = {
       .reduce((acumulator, num) => {
         return (acumulator += num);
       }, value);
-
     if (totalValue * toPercent < valueEmployer) {
       statusObj.status = false;
       statusObj.msg = [
