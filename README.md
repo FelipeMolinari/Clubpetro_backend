@@ -1,36 +1,33 @@
-## Sistama anti fraude.
+#### 1. Sistama anti fraude.
 
 Na revenda de combustíveis, mais especificamente no programa de fidelidade do Posto de Combustíveis, é necessário um processo de auditoria para verificar se a pontuação de determinado cliente é de fato genuína. Vendas que são suspeitas de fraude vão para uma tabela onde um usuário credenciado pode aprovar ou desaprovar a venda
 
-## Objetivo
+### 2. Objetivo
 
 Construir um servidor que receba informações de uma venda e, se baseando em determinadas regras de negócio, identifique essa venda como fraudulenta ou não.
 
 
 
-## Regras de negócio:
+### 3. Regras de negócio:
 
 ```
-O mesmo frentista pode vender no máximo 20 abastecimentos no mês;
+- O mesmo frentista pode vender no máximo 20 abastecimentos no mês.
+
+- Um único frentista pode vender no máximo 20% de todas as vendas.
+
+- Um único cliente pode abastecer seu carro no máximo 7 vezes por mês.
+
+- Um frentista pode vender no máximo 3 vezes para o mesmo cliente.
 ```
 
-```
-Um único frentista pode vender no máximo 20% de todas as vendas;
-```
-```
-Um único cliente pode abastecer seu carro no máximo 7 vezes por mês;
-```
-```
-Um frentista pode vender no máximo 3 vezes para o mesmo cliente.
-```
-
-## Tecnologias utilizadas
+### 4. Tecnologias utilizadas
 - [NojeJS](https://nodejs.org/en/).
 - [MongoDB](https://www.mongodb.com/).
 
-## Models:
 
-### Client
+### 5. Models:
+
+#### 5.1 Client
 
 
 | Campo      | Descrição                                                                                      |
@@ -42,7 +39,7 @@ Um frentista pode vender no máximo 3 vezes para o mesmo cliente.
 | createdAt  | Objeto Date do momento da criação do registo. Criado pelo Mongodb.                             |   
 | updatedAt  | Objeto Date do momento da última edição do registro. Criado pelo Mongodb.                      |
 
-### Employee
+#### 5.2 Employee
 
 
 | Campo      | Descrição                                                                                      |
@@ -54,7 +51,7 @@ Um frentista pode vender no máximo 3 vezes para o mesmo cliente.
 | updatedAt  | Objeto Date do momento da última edição do registro. Criado pelo Mongodb.                      |
 
 
-### Transaction
+#### 5.3 Transaction
 
 | Campo      | Descrição                                                                                      |
 | ---------- | -----------------------------------------------------------------------------------------------|
@@ -66,6 +63,72 @@ Um frentista pode vender no máximo 3 vezes para o mesmo cliente.
 | createdAt  | Objeto Date do momento da criação do registo. Criado pelo Mongodb.                             |   
 | updatedAt  | Objeto Date do momento da última edição do registro. Criado pelo Mongodb.                      |
 
+
+### 6. Controllers
+
+#### 6.1 Client
+| Método     | Descrição                                                                                      |
+| ---------- | ------------------------------------------------------ |
+| index      | Método que lista todos os cliente com suas informações.|
+| store      | Método que adiciona um cliente no banco de dados. É feita uma validação dos campos e uma verificação do campo cpf no banco, caso a validação esteja errada ou já existir o cpf especificado, uma mensagem contendo o erro é enviada na resposta|
+| update     | Método responsável por atualizar um cliente. É importante notar que só é possível alterar o email e o cellphone do cliente. |
+
+***Observações***: 
+- No método _store_() o cpf enviado deve ser um cpf válido, sendo assim, recomendo a utilização do seguinte site que gera cpfs válidos: [Gerador de CPF](https://www.geradordecpf.org/)
+- O cpf pode conter ou não "." e "-". 
+
+
+#### 6.2 Employee
+| Método     | Descrição                                                                                      |
+| ---------- | ------------------------------------------------------ |
+| index      | Método que lista todos os funcionários com suas informações.|
+| store      | Método que adiciona um funcionário no banco de dados. É feita uma validação dos campos e uma verificação do campo cpf no banco, caso a validação esteja errada ou já existir o cpf especificado, uma mensagem contendo o erro é enviada na resposta|
+| update     | Método responsável por atualizar um responsável. É importante notar que é possível alterar somente o  salário do funcionário. (A gente conta com a honestidade do funcionário. 😂😂 ) |
+
+***Observações***: 
+- No método _store_() o cpf enviado deve ser um cpf válido, sendo assim, recomendo a utilização do seguinte site que gera cpfs válidos: [Gerador de CPF](https://www.geradordecpf.org/)
+- O cpf pode conter ou não "." e "-". 
+
+#### 6.3 Sessions
+
+| Método     | Descrição                                                                                      |
+| ---------- | ------------------------------------------------------ |
+| store      | Método responsável por criar uma session, recebe como parâmetro o _cpf_ do funcionário, caso seja um cpf presente no banco de dados, um token de acesso é gerado, permitindo que um funcionário efetue uma transação.|
+
+
+
+#### 6.4 Transactions
+
+| Método     | Descrição                                                                                      |
+| ---------- | ------------------------------------------------------ |
+| index      | Método que lista todos as transações com suas informações.|
+| store      | Método que cria uma nova transação, recebendo _clientCpf_ e o _value_ referente a transação, o employeeCpf é adicionado a requisição depois que o funcionário é autenticado pelo sistema. (Middleware de autentificação).|
+
+
+***Observações importantes***: 
+- No Headers da requisição _store_ de uma nova transação deve ter um campo _authorization_ contendo o **token** gerado pelo store de uma session. Dessa forma, eu consigo garantir que o funcionário está conectado no sistema para poder fazer finalizar uma transação. Caso o token não seja informado, a API retornará _"Token not provided"_, e a função _next()_ referente à transactionController.store não será chamada. 
+
+### 7. Rotas
+
+```js
+
+const routes = express.Router();
+
+routes.post("/users", clientController.store);
+routes.get("/users", clientController.index);
+routes.put("/users/:cpf", clientController.update);
+
+routes.post("/employees", employeeController.store);
+routes.get("/employees", employeeController.index);
+routes.put("/employees/:cpf", employeeController.update);
+
+routes.post("/sessions", sessionController.store);
+
+routes.post("/transactions", employeeAuth, transactionController.store);
+routes.get("/transactions", transactionController.index);
+export default routes;
+
+```
 
 ## Perguntas:
 
