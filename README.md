@@ -156,5 +156,13 @@ Importante notar que a função _employeeAuth_ é referênte ao middleware de au
 2. Você consegue prever algum gargalo em algum comportamento específico da sua aplicação?
   R. Pode acontecer alguns problemas de validação, por exemplo é permitido 2 emails iguais para diferentes clientes. Entretanto, se tratando de um protótipo e não um produto de fato, acredito que isso não seria um problema. 
 
+3. O que você sabe sobre sistemas de mensageria? Cite exemplos de casos onde é uma boa opção utilizar ou não.
+  R. Mensageria consiste em um sistema responsável por intermediar a comunicação entre dois servidores, tipo um middleware. No geral, o sistema de mensageria possuí algumas vantagens, um exemplo fácil de entender é o de um sistema de E-Commerce que precisa de se comunicar com um sistema que gera notas fiscais. Em um sistema sem utilização de mensageria, caso o sistema de notas fiscais fique indisponível, o sistema de E-Commerce não poderá completar a venda ou então, ficará ocioso aguardando o sistema de notas voltar. Em um sistema que utiliza mensageria, mesmo que o servidor responsável por gerar as notas fique fora de ar, a requisição será enfileirada e a nota será gerada posteriormente, sem que o sistema de E-commerce pare.
+  Existem algumas técnologias que ajudam na implementação de um sistema de mensageria, em java é muito utilizado o ActiveMQ. Já para nodeJs o KafkaJS está sendo muito utilizado, e sendo constantemente atualizado no github, se mostra como uma ótima solução.
+  
+4. O que você entende sobre pipelines CI/CD?
+
+ R.  Um pipeline de CI / CD ajuda a automatizar as etapas do processo de entrega do software, como iniciar a criação de código, executar testes automatizados e implantar em um ambiente de preparação ou produção. 
+
 - É isso... Qualquer dúvida ou sujestão entre em contato. 
 :email:. felipemolinari874@gmail.com
